@@ -64,7 +64,7 @@
                     let data = JSON.parse(result.privJson);  //JSON資料
                     console.log("解析後的 JSON:", data);
 
-                    let recognizedText = data.NBest?.[0]?.Display ?? "無法識別";
+                    let recognizedText = data.NBest?.[0]?.Display ?? "無法辨識";
                     let pronunciationAssessment = data.NBest?.[0]?.PronunciationAssessment || {};
 
                 
