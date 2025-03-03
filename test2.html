@@ -8,7 +8,7 @@
 </head>
 <body>
     <h2>請朗讀以下內容：</h2>
-    <p id="text">今天是個美好的日子，陽光明媚，微風輕拂，讓我們一起享受這片刻的寧靜與快樂。</p>
+    <p id="text">今天的天氣很好，下午想要跟三五好友一同去打球，一定會很開心</p>
 
     <button id="start-recording">🎤 開始錄音</button>
     <button id="stop-recording" disabled>⏹️ 結束錄音</button>
@@ -31,10 +31,10 @@
         let isRecording = false;
 
         document.getElementById("start-recording").addEventListener("click", () => {
-            if (!AZURE_KEY || !REGION) {
-                alert("請填入你的 Azure API Key 和 Region！");
-                return;
-            }
+            //if (!AZURE_KEY || !REGION) {
+                //alert("請填入你的 Azure API Key 和 Region！");
+               // return;
+           // }
 
             document.getElementById("status").innerText = "🎤 錄音中，請開始朗讀...";
             document.getElementById("start-recording").disabled = true;
@@ -46,7 +46,7 @@
             const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
             recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
-            // 設定發音評分
+            //發音評分
             const referenceText = document.getElementById("text").innerText;
             const pronunciationConfig = new sdk.PronunciationAssessmentConfig(
                 referenceText, 
@@ -55,16 +55,16 @@
             );
             pronunciationConfig.applyTo(recognizer);
 
-            // 立即開始錄音 + 語音識別
+            //錄音
             isRecording = true;
             recognizer.recognizeOnceAsync(result => {
-                console.log("Azure API 回傳結果:", result); // Debug 確認結果
+                console.log("Azure API 回傳結果:", result); 
 
                 if (result.reason === sdk.ResultReason.RecognizedSpeech) {
-                    let data = JSON.parse(result.privJson);  // 解析 JSON 資料
+                    let data = JSON.parse(result.privJson);  //JSON資料
                     console.log("解析後的 JSON:", data);
 
-                    let recognizedText = data.NBest?.[0]?.Display ?? "未能識別";
+                    let recognizedText = data.NBest?.[0]?.Display ?? "無法識別";
                     let pronunciationAssessment = data.NBest?.[0]?.PronunciationAssessment || {};
 
                 
@@ -73,7 +73,7 @@
                     document.getElementById("fluency-score").innerText = `📏 流暢度: ${pronunciationAssessment.FluencyScore || "無法評分"}`;
                     document.getElementById("completeness-score").innerText = `📖 完整度: ${pronunciationAssessment.CompletenessScore || "無法評分"}`;
 
-                    // 清空舊的單詞評分
+                    //清空舊的評分
                     let wordScoresList = document.getElementById("word-scores");
                     wordScoresList.innerHTML = "";
 
@@ -103,7 +103,7 @@
 
         document.getElementById("stop-recording").addEventListener("click", () => {
             if (isRecording && recognizer) {
-                document.getElementById("status").innerText = "⏳ 分析中，請稍後...";
+                document.getElementById("status").innerText = "⏳ 評分中，請稍後...";
                 document.getElementById("stop-recording").disabled = true;
                 recognizer.stopContinuousRecognitionAsync();  // 停止錄音
             }
